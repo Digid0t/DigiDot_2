@@ -256,7 +256,9 @@ Mögliche zukünftige Verbesserungen
     Integration von Logos: Dem QR-Code ein kleines Logo in der Mitte hinzufügen.
 
 
-____
+_____
 
+<img src="https://raw.githubusercontent.com/Digid0t/DigiDot_2/blob/main/QR-Code%20Replacer.png" alt="QR-Code_Replacer Vorschau" width="400">
 
+_____
 
