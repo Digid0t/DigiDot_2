@@ -263,3 +263,6 @@ _____
 
 _____
 
+<img src="https://raw.githubusercontent.com/Digid0t/DigiDot_2/main/DigiDot_2_QR.png" alt="DigiDot 2 QR Code" width="300">
+
+____
