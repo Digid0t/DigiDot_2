@@ -19,8 +19,6 @@ https://raw.githack.com/Digid0t/DigiDot_2/main/index.html
 bildlink:
 https://github.com/Digid0t/DigiDot_2/blob/main/QR-Code%20Replacer.png
 
-einfügen:
-![QR-Code Replacer](https://raw.githubusercontent.com/Digid0t/DigiDot_2/main/QR-Code%20Replacer.png)
 _____
 
 (Empfehlung: Ersetze diesen Link durch einen echten Screenshot oder ein GIF deiner Anwendung, um die Funktionalität zu demonstrieren.)
