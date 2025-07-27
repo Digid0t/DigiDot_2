@@ -9,9 +9,19 @@
 ![alt text](https://img.shields.io/badge/Technologie-Vanilla%20JS-yellow.svg)
 
 Ein leistungsstarkes, rein clientseitiges Web-Tool zum Einfügen und präzisen Positionieren von QR-Codes auf Bildern. Diese Anwendung wurde mit dem Fokus auf Einfachheit, Leistung und Datenschutz entwickelt. Da die gesamte Verarbeitung lokal im Browser des Benutzers stattfindet, werden zu keinem Zeitpunkt Bilder oder Daten an einen externen Server gesendet.
+____
+code:
+https://github.com/Digid0t/DigiDot_2/blob/main/index.html
 
-![alt text](https://raw.githubusercontent.com/username/repo/main/screenshot.gif)
+web:
+https://raw.githack.com/Digid0t/DigiDot_2/main/index.html
 
+bildlink:
+https://github.com/Digid0t/DigiDot_2/blob/main/QR-Code%20Replacer.png
+
+einfügen:
+![QR-Code Replacer](https://raw.githubusercontent.com/Digid0t/DigiDot_2/main/QR-Code%20Replacer.png)
+_____
 
 (Empfehlung: Ersetze diesen Link durch einen echten Screenshot oder ein GIF deiner Anwendung, um die Funktionalität zu demonstrieren.)
 ✨ Features im Überblick
