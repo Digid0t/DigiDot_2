@@ -258,7 +258,8 @@ Mögliche zukünftige Verbesserungen
 
 _____
 
-<img src="https://raw.githubusercontent.com/Digid0t/DigiDot_2/blob/main/QR-Code%20Replacer.png" alt="QR-Code_Replacer Vorschau" width="400">
+![QR-Code Replacer](https://raw.githubusercontent.com/Digid0t/DigiDot_2/main/QR-Code%20Replacer.png)
+
 
 _____
 
