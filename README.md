@@ -6,7 +6,8 @@
 ![alt text](https://img.shields.io/badge/Lizenz-MIT-blue.svg)
 
 
-![alt text](https://img.shields.io/badge/Technologie-Vanilla%20JS-yellow.svg)
+![HTML5](https://img.shields.io/badge/Technologie-HTML5-orange.svg)
+![Javascript](https://img.shields.io/badge/Technologie-Vanilla%20JS-yellow.svg)
 
 Ein leistungsstarkes, rein clientseitiges Web-Tool zum Einfügen und präzisen Positionieren von QR-Codes auf Bildern. Diese Anwendung wurde mit dem Fokus auf Einfachheit, Leistung und Datenschutz entwickelt. Da die gesamte Verarbeitung lokal im Browser des Benutzers stattfindet, werden zu keinem Zeitpunkt Bilder oder Daten an einen externen Server gesendet.
 ____
