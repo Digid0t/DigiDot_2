@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigiDot QR-Code Replacer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .controls-panel {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            position: sticky;
+            top: 20px;
+        }
+
+        .upload-section {
+            background: white;
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: border-color 0.3s;
+        }
+
+        .upload-section:hover {
+            border-color: #6c757d;
+        }
+
+        .upload-label {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .upload-label:hover {
+            background: #0056b3;
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        #urlInput {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            margin-bottom: 10px;
+        }
+
+        #urlInput:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        #generateBtn {
+            width: 100%;
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        #generateBtn:hover:not(:disabled) {
+            background: #218838;
+        }
+
+        #generateBtn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .adjustment-controls {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .adjustment-controls h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .control-group input[type="range"] {
+            flex: 1;
+        }
+
+        .value-display {
+            background: #e9ecef;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            min-width: 60px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .canvas-container {
+            position: relative;
+            display: none;
+        }
+
+        #previewCanvas {
+            max-width: 100%;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            cursor: crosshair;
+            display: block;
+        }
+
+        .qr-overlay {
+            position: absolute;
+            border: 2px dashed #007bff;
+            cursor: move;
+            display: none;
+        }
+
+        .resize-handle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #007bff;
+            border: 1px solid white;
+            bottom: -5px;
+            right: -5px;
+            cursor: se-resize;
+        }
+
+        #finalizeBtn {
+            width: 100%;
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: none;
+            margin-bottom: 10px;
+        }
+
+        #finalizeBtn:hover {
+            background: #138496;
+        }
+
+        #downloadBtn {
+            width: 100%;
+            background: #6610f2;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: none;
+        }
+
+        #downloadBtn:hover {
+            background: #5008d0;
+        }
+
+        .info {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .info p {
+            color: #0c5460;
+            margin: 0;
+        }
+
+        .tip {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            display: none;
+        }
+
+        #qrcode {
+            display: none;
+        }
+
+        #finalCanvas {
+            display: none;
+        }
+
+        .error {
+            color: #dc3545;
+            margin-top: 10px;
+            display: none;
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .controls-panel {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 DigiDot QR-Code Replacer</h1>
+
+        <div class="main-layout">
+            <div class="controls-panel">
+                <div class="info">
+                    <p>📱 Laden Sie Ihr DigiDot-Bild hoch, positionieren Sie den neuen QR-Code perfekt im Kopf und speichern Sie das fertige Bild!</p>
+                </div>
+
+                <div class="upload-section">
+                    <label for="imageInput" class="upload-label">
+                        📤 Bild auswählen
+                    </label>
+                    <input type="file" id="imageInput" accept="image/*">
+                    <p style="margin-top: 10px; color: #6c757d;">Oder ziehen Sie das Bild hierher</p>
+                </div>
+
+                <div class="input-section">
+                    <div class="input-group">
+                        <input type="url" id="urlInput" placeholder="https://example.com - Ihr Link hier" disabled>
+                        <button id="generateBtn" disabled>QR-Code generieren</button>
+                    </div>
+                    <div class="error" id="errorMsg"></div>
+                </div>
+
+                <div class="adjustment-controls" id="adjustmentControls">
+                    <h3>⚙️ QR-Code Position anpassen</h3>
+
+                    <div class="control-group">
+                        <label>Horizontale Position:</label>
+                        <div class="slider-container">
+                            <input type="range" id="posX" min="0" max="800" value="310">
+                            <span class="value-display" id="posXValue">310</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Vertikale Position:</label>
+                        <div class="slider-container">
+                            <input type="range" id="posY" min="0" max="800" value="240">
+                            <span class="value-display" id="posYValue">240</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Größe:</label>
+                        <div class="slider-container">
+                            <input type="range" id="qrSize" min="100" max="300" value="180" step="10">
+                            <span class="value-display" id="qrSizeValue">180</span>
+                        </div>
+                    </div>
+
+                    <div class="tip">
+                        💡 Tipp: Klicken Sie auf das Bild oder ziehen Sie den QR-Code direkt mit der Maus!
+                    </div>
+                </div>
+
+                <button id="finalizeBtn">✅ Position bestätigen & Bild erstellen</button>
+                <button id="downloadBtn">💾 Fertiges Bild herunterladen</button>
+            </div>
+
+            <div class="canvas-container" id="canvasContainer">
+                <canvas id="previewCanvas"></canvas>
+                <div class="qr-overlay" id="qrOverlay">
+                    <div class="resize-handle"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="qrcode"></div>
+        <canvas id="finalCanvas"></canvas>
+    </div>
+
+    <script>
+        let originalImage = null;
+        let qrCodeImage = null;
+        let isDragging = false;
+        let isResizing = false;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+
+        const imageInput = document.getElementById('imageInput');
+        const urlInput = document.getElementById('urlInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const finalizeBtn = document.getElementById('finalizeBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const previewCanvas = document.getElementById('previewCanvas');
+        const finalCanvas = document.getElementById('finalCanvas');
+        const previewCtx = previewCanvas.getContext('2d');
+        const finalCtx = finalCanvas.getContext('2d');
+        const errorMsg = document.getElementById('errorMsg');
+        const uploadSection = document.querySelector('.upload-section');
+        const canvasContainer = document.getElementById('canvasContainer');
+        const adjustmentControls = document.getElementById('adjustmentControls');
+        const qrOverlay = document.getElementById('qrOverlay');
+        const tip = document.querySelector('.tip');
+
+        // Position controls
+        const posXSlider = document.getElementById('posX');
+        const posYSlider = document.getElementById('posY');
+        const qrSizeSlider = document.getElementById('qrSize');
+        const posXValue = document.getElementById('posXValue');
+        const posYValue = document.getElementById('posYValue');
+        const qrSizeValue = document.getElementById('qrSizeValue');
+
+        // Current QR position
+        let qrX = 310;
+        let qrY = 240;
+        let qrSize = 180;
+
+        // Drag & Drop for image upload
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadSection.style.borderColor = '#007bff';
+        });
+
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.style.borderColor = '#dee2e6';
+        });
+
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadSection.style.borderColor = '#dee2e6';
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('image/')) {
+                handleImageUpload(files[0]);
+            }
+        });
+
+        imageInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleImageUpload(e.target.files[0]);
+            }
+        });
+
+        function handleImageUpload(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    originalImage = img;
+                    urlInput.disabled = false;
+                    generateBtn.disabled = false;
+                    errorMsg.style.display = 'none';
+
+                    // Setup canvases
+                    previewCanvas.width = img.width;
+                    previewCanvas.height = img.height;
+                    finalCanvas.width = img.width;
+                    finalCanvas.height = img.height;
+
+                    // Update slider max values
+                    posXSlider.max = img.width - 100;
+                    posYSlider.max = img.height - 100;
+
+                    // Estimate head position (center-top area)
+                    qrX = Math.floor(img.width / 2 - 90);
+                    qrY = Math.floor(img.height * 0.3);
+                    posXSlider.value = qrX;
+                    posYSlider.value = qrY;
+                    posXValue.textContent = qrX;
+                    posYValue.textContent = qrY;
+
+                    showPreview();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function showPreview() {
+            if (!originalImage) return;
+
+            previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+            previewCtx.drawImage(originalImage, 0, 0);
+
+            if (qrCodeImage) {
+                // Draw QR background
+                previewCtx.fillStyle = 'rgba(245, 234, 212, 0.9)';
+                previewCtx.fillRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
+
+                // Draw QR code
+                previewCtx.drawImage(qrCodeImage, qrX, qrY, qrSize, qrSize);
+
+                updateOverlay();
+            }
+
+            canvasContainer.style.display = 'block';
+        }
+
+        function updateOverlay() {
+            const rect = previewCanvas.getBoundingClientRect();
+            const scaleX = rect.width / previewCanvas.width;
+            const scaleY = rect.height / previewCanvas.height;
+
+            qrOverlay.style.left = (qrX * scaleX) + 'px';
+            qrOverlay.style.top = (qrY * scaleY) + 'px';
+            qrOverlay.style.width = (qrSize * scaleX) + 'px';
+            qrOverlay.style.height = (qrSize * scaleY) + 'px';
+            qrOverlay.style.display = 'block';
+        }
+
+        generateBtn.addEventListener('click', () => {
+            const url = urlInput.value.trim();
+
+            if (!url) {
+                showError('Bitte geben Sie einen gültigen Link ein!');
+                return;
+            }
+
+            if (!originalImage) {
+                showError('Bitte laden Sie zuerst ein Bild hoch!');
+                return;
+            }
+
+            generateQRCode(url);
+        });
+
+        function showError(message) {
+            errorMsg.textContent = message;
+            errorMsg.style.display = 'block';
+            setTimeout(() => {
+                errorMsg.style.display = 'none';
+            }, 3000);
+        }
+
+        function generateQRCode(url) {
+            document.getElementById('qrcode').innerHTML = '';
+
+            const qrcode = new QRCode(document.getElementById('qrcode'), {
+                text: url,
+                width: 512,
+                height: 512,
+                colorDark: '#2c5f5f',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            setTimeout(() => {
+                const qrCanvas = document.querySelector('#qrcode canvas');
+                if (qrCanvas) {
+                    qrCodeImage = new Image();
+                    qrCodeImage.onload = function() {
+                        adjustmentControls.style.display = 'block';
+                        tip.style.display = 'block';
+                        finalizeBtn.style.display = 'block';
+                        showPreview();
+                    };
+                    qrCodeImage.src = qrCanvas.toDataURL();
+                }
+            }, 100);
+        }
+
+        // Slider controls
+        posXSlider.addEventListener('input', (e) => {
+            qrX = parseInt(e.target.value);
+            posXValue.textContent = qrX;
+            showPreview();
+        });
+
+        posYSlider.addEventListener('input', (e) => {
+            qrY = parseInt(e.target.value);
+            posYValue.textContent = qrY;
+            showPreview();
+        });
+
+        qrSizeSlider.addEventListener('input', (e) => {
+            qrSize = parseInt(e.target.value);
+            qrSizeValue.textContent = qrSize;
+            showPreview();
+        });
+
+        // Click on canvas to position
+        previewCanvas.addEventListener('click', (e) => {
+            if (!qrCodeImage || isDragging) return;
+
+            const rect = previewCanvas.getBoundingClientRect();
+            const scaleX = previewCanvas.width / rect.width;
+            const scaleY = previewCanvas.height / rect.height;
+
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
+
+            qrX = Math.round(x - qrSize / 2);
+            qrY = Math.round(y - qrSize / 2);
+
+            // Update sliders
+            posXSlider.value = qrX;
+            posYSlider.value = qrY;
+            posXValue.textContent = qrX;
+            posYValue.textContent = qrY;
+
+            showPreview();
+        });
+
+        // Drag functionality
+        qrOverlay.addEventListener('mousedown', (e) => {
+            if (e.target.classList.contains('resize-handle')) {
+                isResizing = true;
+            } else {
+                isDragging = true;
+                const rect = previewCanvas.getBoundingClientRect();
+                dragOffsetX = e.clientX - rect.left - parseInt(qrOverlay.style.left);
+                dragOffsetY = e.clientY - rect.top - parseInt(qrOverlay.style.top);
+            }
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging && !isResizing) return;
+
+            const rect = previewCanvas.getBoundingClientRect();
+            const scaleX = previewCanvas.width / rect.width;
+            const scaleY = previewCanvas.height / rect.height;
+
+            if (isDragging) {
+                const x = (e.clientX - rect.left - dragOffsetX) * scaleX;
+                const y = (e.clientY - rect.top - dragOffsetY) * scaleY;
+
+                qrX = Math.max(0, Math.min(previewCanvas.width - qrSize, Math.round(x)));
+                qrY = Math.max(0, Math.min(previewCanvas.height - qrSize, Math.round(y)));
+
+                posXSlider.value = qrX;
+                posYSlider.value = qrY;
+                posXValue.textContent = qrX;
+                posYValue.textContent = qrY;
+
+                showPreview();
+            } else if (isResizing) {
+                const x = (e.clientX - rect.left) * scaleX;
+                const newSize = Math.round(x - qrX);
+                qrSize = Math.max(100, Math.min(300, newSize));
+
+                qrSizeSlider.value = qrSize;
+                qrSizeValue.textContent = qrSize;
+
+                showPreview();
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            isResizing = false;
+        });
+
+        // Finalize button
+        finalizeBtn.addEventListener('click', () => {
+            if (!originalImage || !qrCodeImage) {
+                showError('Bitte generieren Sie zuerst einen QR-Code!');
+                return;
+            }
+
+            // Draw final image
+            finalCtx.clearRect(0, 0, finalCanvas.width, finalCanvas.height);
+            finalCtx.drawImage(originalImage, 0, 0);
+
+            // Draw white background for QR
+            finalCtx.fillStyle = '#f5ead4';
+            finalCtx.fillRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
+
+            // Draw QR code
+            finalCtx.drawImage(qrCodeImage, qrX, qrY, qrSize, qrSize);
+
+            // Show download button
+            downloadBtn.style.display = 'block';
+            finalizeBtn.textContent = '✅ Bild wurde erstellt!';
+
+            setTimeout(() => {
+                finalizeBtn.textContent = '✅ Position bestätigen & Bild erstellen';
+            }, 2000);
+        });
+
+        // Download
+        downloadBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = 'DigiDot_' + Date.now() + '.png';
+            link.href = finalCanvas.toDataURL('image/png');
+            link.click();
+        });
+
+        // Enter key support
+        urlInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !generateBtn.disabled) {
+                generateBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
